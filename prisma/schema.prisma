@@ -1,0 +1,78 @@
+// schema.prisma
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostType {
+  NEWS
+  ANALYSIS
+  BLOG
+  TUTORIAL
+  SPONSORED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Language {
+  EN
+  SO
+}
+
+model Post {
+  id          String      @id @default(cuid())
+  slug        String      @unique // Main identifier, e.g., "bitcoin-hits-100k"
+  title       String
+  description String?     // Meta description
+  content     String      // Markdown or HTML content
+  videoUrl    String?     // For YouTube tutorials
+  type        PostType
+  status      PostStatus  @default(DRAFT)
+  imageUrl    String?
+  author      String?     @default("AI Agent")
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("user") // "user" or "admin"
+  
+  notifications Notification[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  message   String
+  read      Boolean  @default(false)
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+}
