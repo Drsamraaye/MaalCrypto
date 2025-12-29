@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, Image as ImageIcon, Link as LinkIcon, Save, Eye } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowLeft, Upload, Image as ImageIcon, Link as LinkIcon, Save } from 'lucide-react';
 import Link from 'next/link';
 
-export default function NewBlogPage() {
+export default function EditBlogPage() {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const params = useParams();
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [form, setForm] = useState({
         title: '',
@@ -20,34 +22,48 @@ export default function NewBlogPage() {
         author: 'Admin'
     });
 
-    const generateSlug = (title: string) => {
-        return title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
-    };
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const res = await fetch(`/api/posts/${params.id}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setForm({
+                        title: data.post.title,
+                        slug: data.post.slug,
+                        description: data.post.description || '',
+                        content: data.post.content || '',
+                        imageUrl: data.post.imageUrl || '',
+                        type: data.post.type,
+                        status: data.post.status,
+                        author: data.post.author || 'Admin'
+                    });
+                    if (data.post.imageUrl) {
+                        setImagePreview(data.post.imageUrl);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch post', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const title = e.target.value;
-        setForm({
-            ...form,
-            title,
-            slug: generateSlug(title)
-        });
-    };
+        if (params.id) {
+            fetchPost();
+        }
+    }, [params.id]);
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Preview
         const reader = new FileReader();
         reader.onloadend = () => {
             setImagePreview(reader.result as string);
         };
         reader.readAsDataURL(file);
 
-        // Upload
         const formData = new FormData();
         formData.append('file', file);
 
@@ -65,28 +81,32 @@ export default function NewBlogPage() {
         }
     };
 
-    const handleSubmit = async (status: string) => {
-        setLoading(true);
+    const handleSubmit = async () => {
+        setSaving(true);
 
         try {
-            const res = await fetch('/api/posts', {
-                method: 'POST',
+            const res = await fetch(`/api/posts/${params.id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, status })
+                body: JSON.stringify(form)
             });
 
             if (res.ok) {
                 router.push('/admin/blog');
             } else {
-                alert('Failed to create post');
+                alert('Failed to update post');
             }
         } catch (error) {
-            console.error('Error creating post', error);
-            alert('Failed to create post');
+            console.error('Error updating post', error);
+            alert('Failed to update post');
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
+
+    if (loading) {
+        return <div className="p-6 text-white">Loading post...</div>;
+    }
 
     return (
         <div className="p-6">
@@ -99,8 +119,8 @@ export default function NewBlogPage() {
                     <ArrowLeft className="w-6 h-6" />
                 </Link>
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Create New Post</h1>
-                    <p className="text-gray-400 mt-1">Add images and links to your blog post</p>
+                    <h1 className="text-3xl font-bold text-white">Edit Post</h1>
+                    <p className="text-gray-400 mt-1">Update your blog post</p>
                 </div>
             </div>
 
@@ -108,19 +128,16 @@ export default function NewBlogPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main Form */}
                     <div className="lg:col-span-2 space-y-6">
-                        {/* Title */}
                         <div>
                             <label className="block text-gray-400 text-sm font-medium mb-2">Title</label>
                             <input
                                 type="text"
                                 value={form.title}
-                                onChange={handleTitleChange}
+                                onChange={(e) => setForm({ ...form, title: e.target.value })}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500"
-                                placeholder="Enter post title"
                             />
                         </div>
 
-                        {/* Slug */}
                         <div>
                             <label className="block text-gray-400 text-sm font-medium mb-2">
                                 Slug (URL)
@@ -131,11 +148,9 @@ export default function NewBlogPage() {
                                 value={form.slug}
                                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500"
-                                placeholder="post-url-slug"
                             />
                         </div>
 
-                        {/* Description */}
                         <div>
                             <label className="block text-gray-400 text-sm font-medium mb-2">Description</label>
                             <textarea
@@ -143,29 +158,16 @@ export default function NewBlogPage() {
                                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                                 rows={2}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500 resize-none"
-                                placeholder="Brief description for SEO"
                             />
                         </div>
 
-                        {/* Content */}
                         <div>
-                            <label className="block text-gray-400 text-sm font-medium mb-2">
-                                Content
-                                <span className="text-green-500 ml-2">(Supports Markdown & HTML)</span>
-                            </label>
+                            <label className="block text-gray-400 text-sm font-medium mb-2">Content</label>
                             <textarea
                                 value={form.content}
                                 onChange={(e) => setForm({ ...form, content: e.target.value })}
                                 rows={15}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500 resize-none font-mono"
-                                placeholder="Write your blog content here...
-
-You can use:
-- **Bold** and *italic* text
-- [Links](https://example.com)
-- Images: ![Alt text](image-url)
-- Headers with # ## ###
-- Lists with - or 1. 2. 3."
                             />
                         </div>
                     </div>
@@ -216,7 +218,6 @@ You can use:
                                     value={form.imageUrl}
                                     onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                                     className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500"
-                                    placeholder="https://..."
                                 />
                             </div>
                         </div>
@@ -241,6 +242,19 @@ You can use:
                             </div>
 
                             <div>
+                                <label className="block text-gray-400 text-xs mb-1">Status</label>
+                                <select
+                                    value={form.status}
+                                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                                    className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-white"
+                                >
+                                    <option value="DRAFT">Draft</option>
+                                    <option value="PUBLISHED">Published</option>
+                                    <option value="ARCHIVED">Archived</option>
+                                </select>
+                            </div>
+
+                            <div>
                                 <label className="block text-gray-400 text-xs mb-1">Author</label>
                                 <input
                                     type="text"
@@ -252,24 +266,14 @@ You can use:
                         </div>
 
                         {/* Actions */}
-                        <div className="space-y-3">
-                            <button
-                                onClick={() => handleSubmit('PUBLISHED')}
-                                disabled={loading || !form.title || !form.slug}
-                                className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-black font-bold py-3 rounded-lg transition-colors"
-                            >
-                                <Save className="w-5 h-5" />
-                                Publish Now
-                            </button>
-                            <button
-                                onClick={() => handleSubmit('DRAFT')}
-                                disabled={loading || !form.title || !form.slug}
-                                className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 disabled:opacity-50 text-white font-medium py-3 rounded-lg transition-colors"
-                            >
-                                <Eye className="w-5 h-5" />
-                                Save as Draft
-                            </button>
-                        </div>
+                        <button
+                            onClick={handleSubmit}
+                            disabled={saving || !form.title || !form.slug}
+                            className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 disabled:opacity-50 text-black font-bold py-3 rounded-lg transition-colors"
+                        >
+                            <Save className="w-5 h-5" />
+                            {saving ? 'Saving...' : 'Save Changes'}
+                        </button>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { TrendingUp, Clock, User, Search, Filter } from 'lucide-react';
+import DynamicPostsGrid from '@/components/DynamicPostsGrid';
 
 export default async function BlogPage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -13,92 +14,6 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
         { name: 'NFTs', count: 22, slug: 'nfts' },
         { name: 'Security', count: 18, slug: 'security' },
         { name: 'Tax & Legal', count: 8, slug: 'tax' }
-    ];
-
-    // Featured Post
-    const featuredPost = {
-        title: "Complete Guide to Cryptocurrency Investing in 2025: From Beginner to Advanced",
-        excerpt: "Master the fundamentals of crypto investing with our comprehensive guide covering wallets, exchanges, portfolio management, risk strategies, and advanced trading techniques.",
-        category: "Beginner Guides",
-        date: "Dec 22, 2025",
-        readTime: "18 min",
-        slug: "complete-crypto-investing-guide-2025",
-        imageUrl: "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=1200&q=80",
-        author: {
-            name: "Sarah Chen",
-            avatar: "SC",
-            role: "Senior Analyst"
-        }
-    };
-
-    // Blog posts
-    const blogPosts = [
-        {
-            title: "How to Secure Your Crypto Wallet: Complete Security Guide",
-            excerpt: "Learn essential security practices to protect your digital assets from hackers and scammers.",
-            category: "Security",
-            categoryColor: "bg-red-500/10 text-red-500 border border-red-500/20",
-            date: "Dec 21, 2025",
-            readTime: "12 min",
-            slug: "secure-crypto-wallet-guide",
-            imageUrl: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&q=80",
-            author: { name: "Mike Johnson", avatar: "MJ" }
-        },
-        {
-            title: "Understanding DeFi: Decentralized Finance Explained Simply",
-            excerpt: "Demystify DeFi protocols, yield farming, liquidity pools, and how to earn passive income.",
-            category: "DeFi",
-            categoryColor: "bg-purple-500/10 text-purple-500 border border-purple-500/20",
-            date: "Dec 20, 2025",
-            readTime: "15 min",
-            slug: "defi-explained-simple",
-            imageUrl: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80",
-            author: { name: "Emma Davis", avatar: "ED" }
-        },
-        {
-            title: "NFT Investing Strategy: How to Find Valuable Projects",
-            excerpt: "Discover proven strategies for identifying NFT projects with long-term potential and avoiding scams.",
-            category: "NFTs",
-            categoryColor: "bg-pink-500/10 text-pink-500 border border-pink-500/20",
-            date: "Dec 19, 2025",
-            readTime: "10 min",
-            slug: "nft-investing-strategy",
-            imageUrl: "https://images.unsplash.com/photo-1643916861364-02e63ce3e52f?w=600&q=80",
-            author: { name: "Alex Wong", avatar: "AW" }
-        },
-        {
-            title: "Crypto Tax Guide 2025: Everything You Need to Know",
-            excerpt: "Navigate crypto taxes with confidence. Learn about capital gains, DeFi income, and deductions.",
-            category: "Tax & Legal",
-            categoryColor: "bg-orange-500/10 text-orange-500 border border-orange-500/20",
-            date: "Dec 18, 2025",
-            readTime: "14 min",
-            slug: "crypto-tax-guide-2025",
-            imageUrl: "https://images.unsplash.com/photo-1554224311-beee4542a1ed?w=600&q=80",
-            author: { name: "Sarah Chen", avatar: "SC" }
-        },
-        {
-            title: "Day Trading Crypto: Essential Strategies for Beginners",
-            excerpt: "Learn technical analysis, chart patterns, and risk management for successful crypto day trading.",
-            category: "Trading",
-            categoryColor: "bg-green-500/10 text-green-500 border border-green-500/20",
-            date: "Dec 17, 2025",
-            readTime: "16 min",
-            slug: "day-trading-crypto-strategies",
-            imageUrl: "https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=600&q=80",
-            author: { name: "Mike Johnson", avatar: "MJ" }
-        },
-        {
-            title: "Staking Rewards Calculator: Maximize Your Crypto Earnings",
-            excerpt: "Compare staking platforms, calculate potential returns, and optimize your passive income strategy.",
-            category: "DeFi",
-            categoryColor: "bg-purple-500/10 text-purple-500 border border-purple-500/20",
-            date: "Dec 16, 2025",
-            readTime: "9 min",
-            slug: "staking-rewards-calculator",
-            imageUrl: "https://images.unsplash.com/photo-1630694093867-4b947d812bf0?w=600&q=80",
-            author: { name: "Emma Davis", avatar: "ED" }
-        }
     ];
 
     // Trending posts
@@ -161,107 +76,9 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
             <section className="container mx-auto px-4 py-16">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {/* Left: Blog Posts */}
-                    <div className="lg:col-span-2 space-y-8">
-
-                        {/* Featured Post */}
-                        <Link
-                            href={`/${locale}/blog/${featuredPost.slug}`}
-                            className="group block bg-neutral-900 rounded-2xl overflow-hidden border border-neutral-800 hover:border-green-500/50 transition-all"
-                        >
-                            <div className="relative h-80 overflow-hidden">
-                                <img
-                                    src={featuredPost.imageUrl}
-                                    alt={featuredPost.title}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-                                <div className="absolute top-4 left-4">
-                                    <span className="inline-block bg-yellow-500 text-black px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                                        ⭐ Featured
-                                    </span>
-                                </div>
-                                <div className="absolute bottom-0 left-0 right-0 p-8">
-                                    <span className="inline-block bg-green-600 text-white px-3 py-1 rounded text-xs font-bold uppercase tracking-wider mb-3">
-                                        {featuredPost.category}
-                                    </span>
-                                    <h2 className="text-3xl font-bold text-white leading-tight mb-3 group-hover:text-green-400 transition-colors">
-                                        {featuredPost.title}
-                                    </h2>
-                                    <p className="text-neutral-300 mb-4 line-clamp-2">
-                                        {featuredPost.excerpt}
-                                    </p>
-                                    <div className="flex items-center gap-4 text-sm text-neutral-400">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 bg-neutral-800 rounded-full flex items-center justify-center text-white text-xs font-bold border border-neutral-700">
-                                                {featuredPost.author.avatar}
-                                            </div>
-                                            <span>{featuredPost.author.name}</span>
-                                        </div>
-                                        <span>•</span>
-                                        <span>{featuredPost.date}</span>
-                                        <span>•</span>
-                                        <span>{featuredPost.readTime} read</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
-
-                        {/* Blog Posts Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {blogPosts.map((post, i) => (
-                                <Link
-                                    key={i}
-                                    href={`/${locale}/blog/${post.slug}`}
-                                    className="group bg-neutral-900 rounded-xl overflow-hidden border border-neutral-800 hover:border-green-500/50 transition-all hover:-translate-y-1"
-                                >
-                                    {/* Image */}
-                                    <div className="relative h-48 overflow-hidden">
-                                        <img
-                                            src={post.imageUrl}
-                                            alt={post.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-                                        />
-                                        <div className="absolute top-3 left-3">
-                                            <span className={`inline-block px-3 py-1 rounded text-xs font-bold uppercase tracking-wider ${post.categoryColor}`}>
-                                                {post.category}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="p-6">
-                                        <h3 className="text-lg font-bold text-white mb-3 leading-tight group-hover:text-green-400 transition-colors line-clamp-2">
-                                            {post.title}
-                                        </h3>
-                                        <p className="text-neutral-400 text-sm mb-4 line-clamp-2">
-                                            {post.excerpt}
-                                        </p>
-
-                                        {/* Meta */}
-                                        <div className="flex items-center justify-between pt-4 border-t border-neutral-800">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-6 bg-neutral-800 rounded-full flex items-center justify-center text-white text-[10px] font-bold border border-neutral-700">
-                                                    {post.author.avatar}
-                                                </div>
-                                                <span className="text-xs font-medium text-neutral-400">{post.author.name}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 text-xs text-neutral-600">
-                                                <Clock className="w-3 h-3" />
-                                                <span>{post.readTime}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-
-                        {/* Load More */}
-                        <div className="text-center pt-8">
-                            <button className="px-8 py-4 bg-neutral-900 border border-neutral-800 hover:bg-green-600 hover:text-white hover:border-green-500 text-neutral-300 rounded-lg font-bold transition-all uppercase tracking-wider text-sm">
-                                Load More Articles
-                            </button>
-                        </div>
+                    {/* Main Content Area */}
+                    <div className="lg:col-span-2">
+                        <DynamicPostsGrid locale={locale} limit={12} showTitle={false} />
                     </div>
 
                     {/* Right: Sidebar */}

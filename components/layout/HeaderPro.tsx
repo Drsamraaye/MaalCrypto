@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Search, Bell, User } from 'lucide-react';
+import { Menu, X, Search, Bell, User, LogOut } from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
 
 interface HeaderProProps {
     locale: string;
@@ -22,6 +23,7 @@ const NAV_LINKS = [
 
 export function HeaderPro({ locale }: HeaderProProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { data: session } = useSession();
 
 
     return (
@@ -38,6 +40,7 @@ export function HeaderPro({ locale }: HeaderProProps) {
                             height={40}
                             className="w-10 h-10"
                             priority
+                            unoptimized
                         />
                         <span className="text-white font-bold text-xl tracking-wider hidden sm:block">
                             MAAL<span className="text-green-500">CRYPTO</span>
@@ -71,19 +74,37 @@ export function HeaderPro({ locale }: HeaderProProps) {
                             <span className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full"></span>
                         </button>
 
-                        {/* Login Button */}
-                        <Link
-                            href={`/${locale}/auth/signin`}
-                            className="hidden md:flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-bold uppercase tracking-wider rounded transition-colors"
-                        >
-                            <User className="w-4 h-4" />
-                            <span>Login</span>
-                        </Link>
+                        {/* Auth Buttons - Conditional */}
+                        {session ? (
+                            <>
+                                {/* User Profile Link */}
+                                <Link
+                                    href={`/${locale}/profile`}
+                                    className="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold uppercase tracking-wider rounded transition-colors"
+                                >
+                                    <User className="w-4 h-4" />
+                                    <span>{session.user?.name || session.user?.email?.split('@')[0]}</span>
+                                </Link>
 
-                        {/* User Profile (Hidden for now until implemented) */}
-                        {/* <button className="hidden md:flex items-center justify-center w-10 h-10 text-gray-400 hover:text-white transition-colors">
-                            <User className="w-5 h-5" />
-                        </button> */}
+                                {/* Logout Button */}
+                                <button
+                                    onClick={() => signOut({ callbackUrl: `/${locale}` })}
+                                    className="hidden md:flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold uppercase tracking-wider rounded transition-colors"
+                                >
+                                    <LogOut className="w-4 h-4" />
+                                    <span>Logout</span>
+                                </button>
+                            </>
+                        ) : (
+                            /* Login Button */
+                            <Link
+                                href={`/${locale}/auth/signin`}
+                                className="hidden md:flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-bold uppercase tracking-wider rounded transition-colors"
+                            >
+                                <User className="w-4 h-4" />
+                                <span>Login</span>
+                            </Link>
+                        )}
 
                         {/* Mobile Menu Toggle */}
                         <button

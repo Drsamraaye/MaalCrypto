@@ -7,7 +7,14 @@ const defaultLocale = "en";
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    if (pathname.startsWith("/admin") || pathname.startsWith("/api") || pathname.startsWith("/_next")) {
+    // Early return for paths that should never be processed by locale middleware
+    if (
+        pathname.startsWith("/admin") ||
+        pathname.startsWith("/api") ||
+        pathname.startsWith("/_next") ||
+        pathname.startsWith("/images") ||
+        pathname.startsWith("/favicon.ico")
+    ) {
         return;
     }
 
@@ -24,7 +31,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Skip all internal paths (_next)
-        "/((?!_next|favicon.ico|api|admin).*)",
+        // Skip all internal paths (_next, api, admin, images, favicon)
+        "/((?!_next|favicon.ico|api|admin|images).*)",
     ],
 };

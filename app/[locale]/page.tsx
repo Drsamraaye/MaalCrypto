@@ -2,6 +2,8 @@ import NewsGridGelle from '@/components/sections/NewsGridGelle';
 import NewsletterGelle from '@/components/sections/NewsletterGelle';
 import YouTubePlaylist from '@/components/sections/YouTubePlaylist';
 import HeroTicker from '@/components/sections/HeroTicker';
+import DynamicPostsGrid from '@/components/DynamicPostsGrid';
+import AdBanner from '@/components/ads/AdBanner';
 
 import Link from 'next/link';
 import { TrendingUp, Zap, ArrowRight } from 'lucide-react';
@@ -60,10 +62,31 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 </div>
             </section>
 
-            {/* Advertisement Placeholder */}
+            {/* Header Advertisement */}
             <section className="py-4 bg-neutral-900 border-y border-neutral-800">
-                <div className="container mx-auto px-4 text-center">
-                    <span className="text-xs text-neutral-500 uppercase">- Advertisement -</span>
+                <div className="container mx-auto px-4">
+                    <AdBanner position="header" className="max-w-4xl mx-auto" />
+                </div>
+            </section>
+
+            {/* Latest Blog Posts from Admin */}
+            <section className="py-16 bg-black">
+                <div className="container mx-auto px-4">
+                    <div className="flex items-center justify-between mb-8">
+                        <div>
+                            <span className="inline-block px-4 py-1 rounded-full bg-green-500/10 text-green-400 text-xs font-bold uppercase tracking-wider mb-2 border border-green-500/20">
+                                From Our Blog
+                            </span>
+                            <h2 className="text-3xl font-bold text-white">Latest Posts</h2>
+                        </div>
+                        <Link
+                            href={`/${locale}/blog`}
+                            className="text-green-500 hover:text-green-400 font-medium flex items-center gap-2"
+                        >
+                            View All <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+                    <DynamicPostsGrid locale={locale} limit={6} showTitle={false} />
                 </div>
             </section>
 
@@ -73,13 +96,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             {/* Newsletter Section */}
             <NewsletterGelle />
 
-
+            {/* Sidebar Ad */}
+            <section className="py-8 bg-neutral-900">
+                <div className="container mx-auto px-4">
+                    <AdBanner position="inline" className="max-w-2xl mx-auto" />
+                </div>
+            </section>
 
             {/* YouTube Playlist */}
             <YouTubePlaylist title="YouTube Playlist" />
 
-
-
         </div>
     );
 }
+

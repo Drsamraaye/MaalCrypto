@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession, signOut, SessionProvider } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import {
     LayoutDashboard,
     FileText,
@@ -21,7 +21,7 @@ const NAV_ITEMS = [
     { label: 'Profile', href: '/admin/profile', icon: User },
 ];
 
-function AdminLayoutInner({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { data: session } = useSession();
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -36,7 +36,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
         <div className="min-h-screen bg-black">
             {/* Mobile Header */}
             <div className="lg:hidden bg-neutral-900 border-b border-neutral-800 p-4 flex items-center justify-between">
-                <h1 className="text-xl font-bold text-green-500">MaalCrypto Admin</h1>
+                <h1 className="text-xl font-bold text-green-500">Admin Panel</h1>
                 <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
                     className="text-white p-2"
@@ -123,13 +123,5 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
                 />
             )}
         </div>
-    );
-}
-
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <SessionProvider>
-            <AdminLayoutInner>{children}</AdminLayoutInner>
-        </SessionProvider>
     );
 }
