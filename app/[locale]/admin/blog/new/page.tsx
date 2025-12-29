@@ -29,11 +29,11 @@ export default function NewBlogPage() {
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const title = e.target.value;
-        setForm({
-            ...form,
+        setForm(prev => ({
+            ...prev,
             title,
             slug: generateSlug(title)
-        });
+        }));
     };
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +58,7 @@ export default function NewBlogPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setForm({ ...form, imageUrl: data.url });
+                setForm(prev => ({ ...prev, imageUrl: data.url }));
             }
         } catch (error) {
             console.error('Upload failed', error);

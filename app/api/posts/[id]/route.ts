@@ -32,6 +32,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
+        console.log(`PUT /api/posts/${id} - Received body:`, JSON.stringify(body, null, 2));
         const { title, slug, description, content, imageUrl, type, status, author, videoUrl } = body;
 
         const post = await prisma.post.update({

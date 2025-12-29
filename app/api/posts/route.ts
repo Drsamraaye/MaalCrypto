@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
+        console.log('POST /api/posts - Received body:', JSON.stringify(body, null, 2));
         const { title, slug, description, content, imageUrl, type, status, author, videoUrl } = body;
 
         if (!title || !slug) {

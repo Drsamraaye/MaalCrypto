@@ -74,7 +74,7 @@ export default function EditBlogPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setForm({ ...form, imageUrl: data.url });
+                setForm(prev => ({ ...prev, imageUrl: data.url }));
             }
         } catch (error) {
             console.error('Upload failed', error);
@@ -133,7 +133,7 @@ export default function EditBlogPage() {
                             <input
                                 type="text"
                                 value={form.title}
-                                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                                onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500"
                             />
                         </div>
@@ -146,7 +146,7 @@ export default function EditBlogPage() {
                             <input
                                 type="text"
                                 value={form.slug}
-                                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                                onChange={(e) => setForm(prev => ({ ...prev, slug: e.target.value }))}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500"
                             />
                         </div>
@@ -155,7 +155,7 @@ export default function EditBlogPage() {
                             <label className="block text-gray-400 text-sm font-medium mb-2">Description</label>
                             <textarea
                                 value={form.description}
-                                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                                 rows={2}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500 resize-none"
                             />
@@ -165,7 +165,7 @@ export default function EditBlogPage() {
                             <label className="block text-gray-400 text-sm font-medium mb-2">Content</label>
                             <textarea
                                 value={form.content}
-                                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                                onChange={(e) => setForm(prev => ({ ...prev, content: e.target.value }))}
                                 rows={15}
                                 className="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-green-500 resize-none font-mono"
                             />
@@ -216,7 +216,7 @@ export default function EditBlogPage() {
                                 <input
                                     type="text"
                                     value={form.imageUrl}
-                                    onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                                    onChange={(e) => setForm(prev => ({ ...prev, imageUrl: e.target.value }))}
                                     className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500"
                                 />
                             </div>
@@ -230,7 +230,7 @@ export default function EditBlogPage() {
                                 <label className="block text-gray-400 text-xs mb-1">Type</label>
                                 <select
                                     value={form.type}
-                                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                                    onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value }))}
                                     className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-white"
                                 >
                                     <option value="BLOG">Blog</option>
@@ -245,7 +245,7 @@ export default function EditBlogPage() {
                                 <label className="block text-gray-400 text-xs mb-1">Status</label>
                                 <select
                                     value={form.status}
-                                    onChange={(e) => setForm({ ...form, status: e.target.value })}
+                                    onChange={(e) => setForm(prev => ({ ...prev, status: e.target.value }))}
                                     className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-white"
                                 >
                                     <option value="DRAFT">Draft</option>
@@ -259,7 +259,7 @@ export default function EditBlogPage() {
                                 <input
                                     type="text"
                                     value={form.author}
-                                    onChange={(e) => setForm({ ...form, author: e.target.value })}
+                                    onChange={(e) => setForm(prev => ({ ...prev, author: e.target.value }))}
                                     className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-white"
                                 />
                             </div>
